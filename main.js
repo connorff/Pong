@@ -4,6 +4,8 @@ window.onload = function () {
 
 let canvas = document.getElementById("canvas")
 
+let score = [0, 0];
+
 canvas.width = window.innerWidth; //document.width is obsolete
 canvas.height = document.body.clientHeight; //document.height is obsolete
 let canvasW = canvas.width;
@@ -69,8 +71,12 @@ function draw() {
     ctx.fillStyle = "black";
     ctx.fillRect(0, 0, canvasW, canvasH);
     
-    //creates ball
+    //writes in score
     ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText(`${score[0]} - ${score[1]}`, canvasW / 2, 50);    
+    
+    //creates ball
     ctx.beginPath();
     ctx.arc(ball[0],ball[1], 40, 0, 2 * Math.PI);
     ctx.stroke();
@@ -87,13 +93,20 @@ function draw() {
     //checks if ball is hitting paddles 1 or 2
     //checks if it is above the bottom and then below the top
     let ballOnPaddle2Y = (ball[1] >= paddle2[1]) && (ball[1] <= paddle2[1] + paddleSize[0]);
-    
-    if (ball[0] + 40 >= paddle2[0] && ballOnPaddle2Y || ball[0] - 40 <= paddle1[0] + 40){
+    let ballOnPaddle1Y = (ball[1] >= paddle1[1]) && (ball[1] <= paddle1[1] + paddleSize[0]);
+
+    //checks if ball 
+    if ((ball[0] + 40 >= paddle2[0] && ballOnPaddle2Y) || (ball[0] - 40 <= paddle1[0] + 40  && ballOnPaddle1Y)){
         traj[0] = -traj[0];
     }
     else {
         if (ball[0] > paddle2[0]){
             score[1]++;
+            ball = [canvasW / 2, canvasH / 2];
+        }
+        else if (ball[0] < 0){
+            score[0]++;
+            ball = [canvasW / 2, canvasH / 2];
         }
     }
     if (ball[1] + 40 >= canvasH || ball[1] - 40 <= 0){
